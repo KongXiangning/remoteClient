@@ -1,0 +1,15 @@
+{
+	"ImportPath": "remoteClient",
+	"GoVersion": "go1.11",
+	"GodepVersion": "v80",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/gorilla/websocket",
+			"Comment": "v1.4.0-5-g483fb8d",
+			"Rev": "483fb8d7c32fcb4b5636cd293a92e3935932e2f4"
+		}
+	]
+}
