@@ -11,47 +11,47 @@ import (
 var key = "dde4b1f8a9e6b814"
 var iv = "test121412412312"
 
-func Encrypt(origData []byte)([]byte,error)  {
+func Encrypt(origData []byte) ([]byte, error) {
 
 	block, err := aes.NewCipher([]byte(key))
-	if err != nil{
-		return nil,err
+	if err != nil {
+		return nil, err
 	}
 
 	blockSize := block.BlockSize()
-	origData = pkcs5Padding(origData,blockSize)
+	origData = PKCS5Padding(origData, blockSize)
 
-	blockMode := cipher.NewCBCEncrypter(block,[]byte(iv))
-	crypted := make([]byte,len(origData))
+	blockMode := cipher.NewCBCEncrypter(block, []byte(iv))
+	crypted := make([]byte, len(origData))
 
-	blockMode.CryptBlocks(crypted,origData)
-	return crypted,err
+	blockMode.CryptBlocks(crypted, origData)
+	return crypted, err
 }
 
-func Decrypt(crypted []byte)([]byte,error)  {
-	block,err := aes.NewCipher([]byte(key))
-	if err != nil{
+func Decrypt(crypted []byte) ([]byte, error) {
+	block, err := aes.NewCipher([]byte(key))
+	if err != nil {
 		fmt.Println(err)
-		return nil,err
+		return nil, err
 	}
 
-	blockMode := cipher.NewCBCDecrypter(block,[]byte(iv))
-	origData := make([]byte,len(crypted))
-	blockMode.CryptBlocks(origData,crypted)
+	blockMode := cipher.NewCBCDecrypter(block, []byte(iv))
+	origData := make([]byte, len(crypted))
+	blockMode.CryptBlocks(origData, crypted)
 
 	origData = PKCS5UnPadding(origData)
-	return origData,err
+	return origData, err
 
 }
 
-func pkcs5Padding(ciphertext []byte,blockSize int) []byte  {
-	padding := blockSize - len(ciphertext) % blockSize
-	padtext := bytes.Repeat([]byte{byte(padding)},padding)
-	return append(ciphertext,padtext...)
+func PKCS5Padding(ciphertext []byte, blockSize int) []byte {
+	padding := blockSize - len(ciphertext)%blockSize
+	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
+	return append(ciphertext, padtext...)
 }
 
-func PKCS5UnPadding(origData []byte) []byte  {
+func PKCS5UnPadding(origData []byte) []byte {
 	length := len(origData)
-	unpadding := int(origData[length - 1])
+	unpadding := int(origData[length-1])
 	return origData[:(length - unpadding)]
 }
