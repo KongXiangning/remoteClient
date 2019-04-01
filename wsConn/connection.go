@@ -9,8 +9,8 @@ import (
 
 type Connection struct {
 	wsConn        *websocket.Conn
-	binaryChan    chan []byte
-	textChan      chan []byte
+	inBinaryChan  chan []byte
+	inTextChan    chan []byte
 	outBinaryChan chan []byte
 	outTextChan   chan []byte
 	closeChan     chan byte
@@ -23,8 +23,8 @@ type Connection struct {
 func Init(wsConn *websocket.Conn) (conn *Connection, err error) {
 	conn = &Connection{
 		wsConn:        wsConn,
-		binaryChan:    make(chan []byte, 1000),
-		textChan:      make(chan []byte, 1000),
+		inBinaryChan:  make(chan []byte, 1000),
+		inTextChan:    make(chan []byte, 1000),
 		outBinaryChan: make(chan []byte, 1000),
 		outTextChan:   make(chan []byte, 1000),
 		closeChan:     make(chan byte, 1),
@@ -78,9 +78,9 @@ func (conn *Connection) readLoop() {
 		}
 		switch index {
 		case 1:
-			conn.textChan <- data
+			conn.inTextChan <- data
 		case 2:
-			conn.binaryChan <- data
+			conn.inBinaryChan <- data
 		}
 	}
 

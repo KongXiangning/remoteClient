@@ -2,6 +2,7 @@ package wsConn
 
 import (
 	"fmt"
+	"k8s-client/common"
 	"log"
 	"remoteClient/utils"
 )
@@ -10,7 +11,7 @@ func (conn *Connection) binaryReadHandler() {
 	var (
 		data []byte
 	)
-	data = <-conn.binaryChan
+	data = <-conn.inBinaryChan
 	go conn.binaryDecoder(data)
 
 }
@@ -51,4 +52,6 @@ func (conn *Connection) binaryDecoder(data []byte) {
 	fmt.Println(method)
 	fmt.Println(string(msgData))
 	fmt.Println(string(utils.SKey))
+
+	//handler := common.KubeTransfer{data[57],method,nil,msgData}
 }
