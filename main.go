@@ -18,7 +18,7 @@ import (
 
 //var origin = "http://localhost:7777"
 //var url = "ws://localhost:7777/ws"
-var addr = flag.String("addr", "192.168.50.122:7777", "http service address")
+var addr = flag.String("addr", "192.168.5.77:7777", "http service address")
 
 func main() {
 	var (
@@ -55,7 +55,7 @@ func main() {
 		}
 
 	}
-	requestHeader.Add("kid", "1")
+	requestHeader.Add("kid", "1010")
 	requestHeader.Add("login", password)
 	requestHeader.Add("key", base64.RawStdEncoding.EncodeToString(iv))
 
@@ -125,11 +125,11 @@ ERR:
 			time.Sleep(1 * time.Second)
 			b := []byte("heartbeat")
 			fmt.Println(b)
-			if err = conn.WriteBinaryMessage([]byte("heartbeat")); err != nil {
+			if err = conn.WriteTextMessage([]byte("heartbeat")); err != nil {
 				fmt.Println(err)
 				return
 			}
-			time.Sleep(100 * time.Hour)
+			time.Sleep(10 * time.Second)
 		}
 	}()
 

@@ -3,6 +3,7 @@ package wsConn
 import (
 	"errors"
 	"github.com/gorilla/websocket"
+	"kube-client/execute"
 	"log"
 	"sync"
 )
@@ -13,6 +14,7 @@ type Connection struct {
 	inTextChan    chan []byte
 	outBinaryChan chan []byte
 	outTextChan   chan []byte
+	transferChan  chan execute.KubeTransfer
 	closeChan     chan byte
 	IsExist       chan int
 
@@ -27,6 +29,7 @@ func Init(wsConn *websocket.Conn) (conn *Connection, err error) {
 		inTextChan:    make(chan []byte, 1000),
 		outBinaryChan: make(chan []byte, 1000),
 		outTextChan:   make(chan []byte, 1000),
+		transferChan:  make(chan execute.KubeTransfer),
 		closeChan:     make(chan byte, 1),
 		IsExist:       make(chan int),
 	}
@@ -38,6 +41,16 @@ func Init(wsConn *websocket.Conn) (conn *Connection, err error) {
 			conn.binaryReadHandler()
 		}
 	}()
+	go func() {
+		for {
+			conn.textReadHandler()
+		}
+	}()
+	go func() {
+		for {
+			conn.binaryWriteHandler()
+		}
+	}()
 
 	return
 }
@@ -45,6 +58,15 @@ func Init(wsConn *websocket.Conn) (conn *Connection, err error) {
 func (conn *Connection) WriteBinaryMessage(data []byte) (err error) {
 	select {
 	case conn.outBinaryChan <- data:
+	case <-conn.closeChan:
+		err = errors.New("connection is closed")
+	}
+	return
+}
+
+func (conn *Connection) WriteTextMessage(data []byte) (err error) {
+	select {
+	case conn.outTextChan <- data:
 	case <-conn.closeChan:
 		err = errors.New("connection is closed")
 	}

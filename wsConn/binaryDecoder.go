@@ -2,7 +2,7 @@ package wsConn
 
 import (
 	"fmt"
-	"k8s-client/common"
+	"kube-client/execute"
 	"log"
 	"remoteClient/utils"
 )
@@ -53,5 +53,7 @@ func (conn *Connection) binaryDecoder(data []byte) {
 	fmt.Println(string(msgData))
 	fmt.Println(string(utils.SKey))
 
-	//handler := common.KubeTransfer{data[57],method,nil,msgData}
+	kubeTransfer := execute.KubeTransfer{data[57], method, "", msgData}
+	client := execute.GetClient()
+	client.Execute(kubeTransfer, conn.transferChan)
 }
