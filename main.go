@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/websocket"
 	"io"
 	"io/ioutil"
+	"kube-client/execute"
 	"log"
 	"net/http"
 	"net/url"
@@ -28,6 +29,7 @@ func main() {
 		u             url.URL
 		requestHeader http.Header
 	)
+	execute.GetClient()
 
 	flag.Parse()
 	log.SetFlags(0)
