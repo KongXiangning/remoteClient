@@ -75,6 +75,7 @@ func (conn *Connection) binaryEncoder(transfer execute.KubeTransfer) {
 	data.WriteByte(1)
 	data.WriteByte(16)
 	data.Write(ivs)
+	data.Write(transfer.Hid)
 	data.WriteByte(transfer.Types)
 	data.WriteByte(byte(mlen))
 	data.Write(methodData)
