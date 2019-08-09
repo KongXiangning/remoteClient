@@ -13,7 +13,6 @@ func (conn *Connection) binaryReadHandler() {
 	)
 	data = <-conn.inBinaryChan
 	go conn.binaryDecoder(data)
-
 }
 
 func (conn *Connection) binaryDecoder(data []byte) {
